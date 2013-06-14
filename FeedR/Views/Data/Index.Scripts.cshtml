@@ -1,0 +1,61 @@
+﻿<script type="text/javascript">
+    var dispatcher = $.connection.feedDispatcher;
+    
+    dispatcher.client.addFeedItem = function (feed) {
+        debugger;
+        feedViewModel.addFeedItem(feed);
+    };
+    
+    $.connection.hub.start(function () {
+        dispatcher.server.addToGroup("main");
+    });
+
+    // Defines a simple feed item view model.
+    function FeedItem() {
+        this.feeds = ko.observableArray([]); // feeds.
+        var feeds = this.feeds;
+
+        this.addFeedItem = function(item) {
+            var newItem = new Feed(item.Id, item.Title, item.Source, item.Description, item.Date);
+            feeds.splice(0, 0, newItem);
+        };
+
+        this.init = function () {
+        };
+
+        this.feedFadeIn = function(element, index, data) {
+            $(element).filter(".feedItem").each(function () {
+                $(this).hide().fadeIn(500);
+            });
+        };
+    } 
+
+    var feedViewModel = new FeedItem();   
+    ko.applyBindings(feedViewModel);
+    
+    function submitKeyword() {
+        var keyword = $("#sKeyword").val();
+        dispatcher.server.addToGroup(keyword);
+    }
+    
+    ko.bindingHandlers.fadeText = {
+        update: function (element, valueAccessor) {
+            $(element).hide();
+            ko.bindingHandlers.text.update(element, valueAccessor);
+            $(element).fadeIn(1000);
+        }
+    };
+
+    
+</script>
+
+<script type="text/html" id="feed-template">
+    <div class="feedItem" data-bind="attr: {id: Id}" >        
+        <h3 data-bind="text: Title"></h3>
+        <p>Source : <label data-bind="text: Source"></label></p>
+        <label data-bind="text: Date"></label>
+        <p data-bind="text: Description"></p>
+        <hr />
+    </div>
+</script>
+

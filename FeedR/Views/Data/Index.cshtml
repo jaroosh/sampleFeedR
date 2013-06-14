@@ -1,0 +1,43 @@
+﻿@model FeedR.ViewModels.FeedSubscriptionViewModel
+
+@{
+    ViewBag.Title = "FeedMe start page";
+    ViewBag.Id = "Home";
+}
+
+@section scripts
+{
+    <script src="/signalr/hubs" ></script>
+    <script src="~/Scripts/Custom/viewModels.js" type="text/javascript" ></script>
+    <script src="~/Scripts/Custom/feed.js" type="text/javascript"></script>
+    
+    @{
+        Html.RenderPartial("Index.Scripts");
+    }
+}
+
+<div class="container" style="margin-top: 40px">
+    <div class="page-header">
+        <h1>Live feed reader</h1>
+    </div>
+</div>
+
+@using (Ajax.BeginForm(new AjaxOptions
+{
+    HttpMethod = "POST",
+    Url = "api/Feed",    
+    OnComplete = "submitKeyword"
+}))
+{
+    <p class="alert alert-success">
+        @Html.LabelFor(m => m.SearchKeyword)
+        @Html.TextBoxFor(m => m.SearchKeyword, new { id = "sKeyword"})
+
+        <input type="submit" value="search" />
+    </p>
+}
+
+<div class="feedsPanel" id="feeds">
+    <div data-bind="template: {name: 'feed-template', afterAdd: feedFadeIn, foreach: feeds}" ></div>
+</div>
+

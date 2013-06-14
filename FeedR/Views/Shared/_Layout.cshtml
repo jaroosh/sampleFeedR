@@ -1,0 +1,65 @@
+﻿@using FeedR.Commons.Utilities
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/bootstrapcss")
+
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="#">FeedMe</a>
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li id="Home">@Html.ActionLink("Home", "Index", "Main")</li>
+                        <li id="SignIn">@Html.ActionLink("SignIn", "Index", "User")</li>
+                        <li id="SignUp">@Html.ActionLink("SignUp", "SignUp", "User")</li>
+                    </ul>
+                    <a class="btn btn-primary pull-right" href="#">Feed Wiki</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @RenderBody()
+
+    @Scripts.Render("~/bundles/jquery")
+
+    @Scripts.Render("~/bundles/bootstrap")
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/signalr")
+    @Scripts.Render("~/bundles/knockout")
+
+    @RenderSection("scripts", required: false)
+
+    <script type="text/javascript">
+        jQuery(function () {
+            // Setup selected link.
+            $("li").each(function (index, element) {
+                $(this).removeClass("active");
+            });
+            $("li[id=@ViewBag.Id]").addClass("active");
+
+            // Setup toastr.
+            if ('@ViewData.ContainsKey(Registry.Keys.ToasterErrorKey)' == 'True')
+                toastr.error("@ViewData[Registry.Keys.ToasterErrorKey]");
+            else if ('@ViewData.ContainsKey(Registry.Keys.ToasterSuccessKey)' == 'True')
+                toastr.success("@ViewData[Registry.Keys.ToasterSuccessKey]");
+        });
+    </script>
+</body>
+</html>
